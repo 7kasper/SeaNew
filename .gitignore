@@ -1,0 +1,39 @@
+# Build Folders #
+bin/
+build/
+libs/
+target/
+gen/
+dllibs/
+dllibss/
+dllibsc/
+
+.externalToolBuilders/
+ # Eclipse Files #
+*.project
+*.classpath
+*.prefs
+/.apt_generated/
+*.factorypath
+
+# Gradle
+.gradle
+.gradletasknamecache
+
+# Netbeans
+/.nb-gradle/
+
+# IntelliJ
+.idea/
+*.iml
+<<<<<<< HEAD
+
+# jRebel
+*.rebel.xml.bak
+resources/rebel.xml
+=======
+/dllibsc/
+/dllibss/
+/libraries_runtime/
+/libraries_shade/
+>>>>>>> branch 'master' of https://github.com/ProtocolSupport/ProtocolSupport.git

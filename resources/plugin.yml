@@ -1,0 +1,32 @@
+name: SeaNew
+author: 7kasper
+version: 0.2
+main: nl.kasper7.seanew.SeaNew
+api-version: 1.13
+commands:
+  seanew:
+    description: Help commands for SeaNew.
+    aliases: sn
+    usage: /<command>
+    permission: seanew.help
+    permission-message: You can't do that!
+  popbrush:
+    description: Set of brushes to populate land.
+    aliases: pbrush
+    usage: /<command>
+    permission: seanew.popbrush
+    permission-message: You can't do that!
+    
+permissions:
+  seanew.help:
+    description: Gives access to SeaNew's help menu.
+    default: op
+  seanew.popbrush:
+    description: Gives access to the popbrush.
+    default: op
+  seanew.admin:
+    description: Gives access to SeaNew's admin commands & things.
+    default: op
+    children:
+        seanew.popbrush: true
+        seanew.help: true
