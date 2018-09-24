@@ -9,8 +9,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import nl.kasper7.seanew.generalutils.TargetUtils;
 import nl.kasper7.seanew.popbrush.util.GenUtils;
-import nl.kasper7.seanew.popbrush.util.TargetUtils;
 
 public class PopBrushCmd implements CommandExecutor {
 

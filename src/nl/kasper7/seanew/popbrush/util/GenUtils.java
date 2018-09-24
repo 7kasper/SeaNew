@@ -20,7 +20,8 @@ import org.bukkit.block.data.type.SeaPickle;
 
 import com.google.common.collect.Lists;
 
-import nl.kasper7.seanew.popbrush.util.ChunkUtils.HeightMapType;
+import nl.kasper7.seanew.generalutils.ChunkUtils;
+import nl.kasper7.seanew.generalutils.ChunkUtils.HeightMapType;
 
 public class GenUtils {
 

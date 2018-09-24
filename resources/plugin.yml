@@ -16,6 +16,12 @@ commands:
     usage: /<command>
     permission: seanew.popbrush
     permission-message: You can't do that!
+  biomebrush:
+    description: Set of brushes to change the biome of the land.
+    aliases: bbrush
+    usage: /<command>
+    permission: seanew.biomebrush
+    permission-message: You can't do that!
     
 permissions:
   seanew.help:
@@ -24,9 +30,13 @@ permissions:
   seanew.popbrush:
     description: Gives access to the popbrush.
     default: op
+  seanew.biomebrush:
+    description: Gives access to the biomebrush.
+    default: op
   seanew.admin:
     description: Gives access to SeaNew's admin commands & things.
     default: op
     children:
         seanew.popbrush: true
+        seanew.biomebrush: true
         seanew.help: true
