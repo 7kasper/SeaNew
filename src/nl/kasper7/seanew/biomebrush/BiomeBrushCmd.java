@@ -55,7 +55,7 @@ public class BiomeBrushCmd implements CommandExecutor, TabCompleter {
 									brush.setMeta("maxSize", new AtomicInteger(60));
 									brush.setMeta("minSize", new AtomicInteger(1));
 								},
-								(brush, user) -> { //Left-click
+								(brush, user) -> { //Right-click
 									brush.setMeta("mode", 
 										((BrushMode) brush.getMeta("mode")) == BrushMode.CIRCLE ? BrushMode.SQUARE : BrushMode.CIRCLE);
 									user.sendActionBar(ChatColor.YELLOW + "Biomebrush mode set to: " 
@@ -63,7 +63,7 @@ public class BiomeBrushCmd implements CommandExecutor, TabCompleter {
 											+ ChatColor.YELLOW + ".");
 									return true;
 								},
-								(brush, user) -> { //Right-click
+								(brush, user) -> { //Left-click
 									int size = ((AtomicInteger) brush.getMeta("size")).get();
 									Biome biome = (Biome) brush.getMeta("biome");
 									BrushMode mode = (BrushMode) brush.getMeta("mode");
