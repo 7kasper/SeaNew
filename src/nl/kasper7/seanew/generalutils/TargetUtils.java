@@ -1,9 +1,8 @@
 package nl.kasper7.seanew.generalutils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -19,8 +18,8 @@ public class TargetUtils {
 	}
 
 	public static BlocksAndChunksAffected getCircleAround(Location location, int radius) {
-		List<Block> blocks = new ArrayList<>();
-		List<Chunk> chunks = new ArrayList<>();
+		Set<Block> blocks = new HashSet<>();
+		Set<Chunk> chunks = new HashSet<>();
 	    int cx = location.getBlockX();
 	    int cy = location.getBlockY();
 	    int cz = location.getBlockZ();
@@ -37,33 +36,50 @@ public class TargetUtils {
 		return new BlocksAndChunksAffected(blocks, chunks);
 	}
 
-	public static class BlocksAndChunksAffected {
-		
-		private List<Block> blocks;
-		private List<Chunk> chunks;
+	public static BlocksAndChunksAffected getSquareAround(Location location, int size) {
+		Set<Block> blocks = new HashSet<>();
+		Set<Chunk> chunks = new HashSet<>();
+	    int cx = location.getBlockX();
+	    int cy = location.getBlockY();
+	    int cz = location.getBlockZ();
+	    World world = location.getWorld();
+	    for (int x = cx - size; x <= cx + size; x++) {
+	        for (int z = cz - size; z <= cz + size; z++) {
+            	Block b = world.getBlockAt(x, cy, z);
+                blocks.add(b);
+                chunks.add(b.getChunk());
+	        }
+	    }
+		return new BlocksAndChunksAffected(blocks, chunks);
+	}
 
-		public BlocksAndChunksAffected(List<Block> blocks, List<Chunk> chunks) {
+	public static class BlocksAndChunksAffected {
+
+		private Set<Block> blocks;
+		private Set<Chunk> chunks;
+
+		public BlocksAndChunksAffected(Set<Block> blocks, Set<Chunk> chunks) {
 			super();
 			this.blocks = blocks;
 			this.chunks = chunks;
 		}
 
-		public List<Block> getBlocks() {
+		public Set<Block> getBlocks() {
 			return blocks;
 		}
 
-		public void setBlocks(List<Block> blocks) {
+		public void setBlocks(Set<Block> blocks) {
 			this.blocks = blocks;
 		}
 
-		public List<Chunk> getChunks() {
+		public Set<Chunk> getChunks() {
 			return chunks;
 		}
 
-		public void setChunks(List<Chunk> chunks) {
+		public void setChunks(Set<Chunk> chunks) {
 			this.chunks = chunks;
 		}
-		
+
 	}
 
 }

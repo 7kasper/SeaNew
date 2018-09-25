@@ -45,23 +45,30 @@ public class BiomeBrushCmd implements CommandExecutor, TabCompleter {
 								return false;
 							}
 						}
+						BrushMode selectedMode = (args.length > 2  && args[2].toLowerCase().startsWith("sq"))
+								? BrushMode.SQUARE : BrushMode.CIRCLE;
 						Brushes.add(player, new Brush(key,
 								(brush) -> {
 									brush.setMeta("size", selectedSize);
 									brush.setMeta("biome", selected);
+									brush.setMeta("mode", selectedMode);
 								},
 								(brush, user) -> {
-									brush.setMeta("biome", BiomeUtils.getNextBiome((Biome) brush.getMeta("biome")));
-									user.sendActionBar(ChatColor.YELLOW + "Biomebrush biome set to: " 
-											+ ChatColor.AQUA + ((Biome) brush.getMeta("biome")).name()
+									brush.setMeta("mode", 
+										((BrushMode) brush.getMeta("mode")) == BrushMode.CIRCLE ? BrushMode.SQUARE : BrushMode.CIRCLE);
+									user.sendActionBar(ChatColor.YELLOW + "Biomebrush mode set to: " 
+											+ ChatColor.AQUA + ((BrushMode) brush.getMeta("mode")).name()
 											+ ChatColor.YELLOW + ".");
 									return true;
 								},
 								(brush, user) -> {
-									int radius = ((AtomicInteger) brush.getMeta("size")).get();
+									int size = ((AtomicInteger) brush.getMeta("size")).get();
 									Biome biome = (Biome) brush.getMeta("biome");
+									BrushMode mode = (BrushMode) brush.getMeta("mode");
 									Location location = TargetUtils.getTarget(user);
-									BlocksAndChunksAffected affected = TargetUtils.getCircleAround(location, radius);
+									BlocksAndChunksAffected affected = mode == BrushMode.CIRCLE ?
+											TargetUtils.getCircleAround(location, size) :
+											TargetUtils.getSquareAround(location, size);
 									affected.getBlocks().forEach(block -> block.setBiome(biome));
 									affected.getChunks().forEach(chunk -> ChunkUtils.updateChunk(chunk));
 									return true;
@@ -104,7 +111,8 @@ public class BiomeBrushCmd implements CommandExecutor, TabCompleter {
 		return false;
 	}
 
-	static final List<String> empty = new ArrayList<>(); 
+	static final List<String> empty = new ArrayList<>();
+
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
 		if (args.length < 2) {
@@ -112,8 +120,17 @@ public class BiomeBrushCmd implements CommandExecutor, TabCompleter {
 				.map(biome -> biome.name().toLowerCase())
 				.filter(name -> name.startsWith(args[0].toLowerCase().trim()))
 				.collect(Collectors.toList());
+		} else if (args.length == 3) {
+			return Arrays.stream(BrushMode.values())
+				.map(mode -> mode.name().toLowerCase())
+				.filter(name -> name.startsWith(args[2].toLowerCase().trim()))
+				.collect(Collectors.toList());
 		}
 		return empty;
+	}
+
+	private enum BrushMode {
+		CIRCLE, SQUARE
 	}
 
 }

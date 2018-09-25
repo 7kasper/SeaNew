@@ -60,7 +60,7 @@ public class GenUtils {
 	            }
 	        }
 	        return n;
-		} catch (Exception e ){
+		} catch (Exception e){
 			e.printStackTrace();
 			return 0;
 		}
