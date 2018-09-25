@@ -42,4 +42,4 @@ jobs:
       - run: gradle jar
 
       - store_artifacts:
-          path: /target
+          path: /target/SeaNew.jar
