@@ -2,6 +2,7 @@ package nl.kasper7.seanew.generalutils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -42,16 +43,17 @@ public class ChunkUtils {
 			//This is custom fallback option for non-vanilla bukkit implementations.
 			heightFunc = (type, loc) -> {
 				//TODO Ugh...
-				List<Material> ignore = Arrays.asList(Material.AIR);
+				List<Material> ignore = new ArrayList<>();
+				ignore.add(Material.AIR);
 				switch(type) {
 					//TODO check if methods are correct. Maybe make precompiled ignore list for everyone?
 					case WORLD_SURFACE: {
-						break;
-					}
-					case WORLD_SURFACE_WG: {
 						ignore.addAll(Arrays.stream(Material.values())
 								.filter(mat -> mat.name().contains("LOG"))
 								.collect(Collectors.toList()));
+						break;
+					}
+					case WORLD_SURFACE_WG: {
 						//Fallthrough
 					}
 					case MOTION_BLOCKING_NO_LEAVES: {
@@ -67,13 +69,13 @@ public class ChunkUtils {
 						break;
 					}
 					case OCEAN_FLOOR_WG: {
-						ignore.addAll(Arrays.stream(Material.values())
-								.filter(mat -> mat.name().contains("CORAL") || mat.name().contains("GRASS") || mat.name().contains("PICKLE"))
-								.collect(Collectors.toList()));
+						ignore.add(Material.WATER);
 						//Fallthrough
 					}
 					case OCEAN_FLOOR: {
-						ignore.add(Material.WATER);
+						ignore.addAll(Arrays.stream(Material.values())
+								.filter(mat -> mat.name().contains("CORAL") || mat.name().contains("GRASS") || mat.name().contains("PICKLE"))
+								.collect(Collectors.toList()));
 						break;
 					}
 					default: {

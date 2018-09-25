@@ -1,6 +1,5 @@
 package nl.kasper7.seanew.biomebrush;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,6 +20,7 @@ import nl.kasper7.seanew.generalutils.Brush;
 import nl.kasper7.seanew.generalutils.Brushes;
 import nl.kasper7.seanew.generalutils.ChunkUtils;
 import nl.kasper7.seanew.generalutils.PlayerUtils;
+import nl.kasper7.seanew.generalutils.SuperGeneralUtils;
 import nl.kasper7.seanew.generalutils.TargetUtils;
 import nl.kasper7.seanew.generalutils.TargetUtils.BlocksAndChunksAffected;
 
@@ -104,8 +104,6 @@ public class BiomeBrushCmd implements CommandExecutor, TabCompleter {
 		return false;
 	}
 
-	static final List<String> empty = new ArrayList<>();
-
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
 		if (args.length < 2) {
@@ -119,7 +117,7 @@ public class BiomeBrushCmd implements CommandExecutor, TabCompleter {
 				.filter(name -> name.startsWith(args[2].toLowerCase().trim()))
 				.collect(Collectors.toList());
 		}
-		return empty;
+		return SuperGeneralUtils.EMPTY_STRING_LIST;
 	}
 
 	private enum BrushMode {

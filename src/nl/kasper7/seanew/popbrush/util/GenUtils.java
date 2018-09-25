@@ -25,51 +25,48 @@ import nl.kasper7.seanew.generalutils.ChunkUtils.HeightMapType;
 
 public class GenUtils {
 
-	public static int genKelp(Location location, Random random) {
-		try {
-	        int n = 0; //Number of kelp plants generated
-	        Location blockloc = ChunkUtils.getHeighestLocation(location, HeightMapType.OCEAN_FLOOR);
-	        if (blockloc.getBlock().getBlockData().getMaterial() == Material.WATER) {
-	            BlockData kelp = Material.KELP.createBlockData();
-	            BlockData kelpPlant = Material.KELP_PLANT.createBlockData();
-	            int n3 = 1 + random.nextInt(10);
-	            for (int k = 0; k <= n3; ++k) {
-	            	Location blocklocup = blockloc.clone();
-	            	blocklocup.add(0, 1, 0);
-	                if (blockloc.getBlock().getBlockData().getMaterial() == Material.WATER && blocklocup.getBlock().getBlockData().getMaterial() == Material.WATER) {
-	                    if (k == n3) {
-	                    	Ageable kelpy = (Ageable) kelp.clone();
-	                    	kelpy.setAge(random.nextInt(23));
-	                    	blockloc.getBlock().setBlockData(kelpy, false);
-	                        n++;
-	                    } else {
-	                    	blockloc.getBlock().setBlockData(kelpPlant, false);
-	                    }
-	                } else if (k > 0) {
-	                	Location blocklocdown = blockloc.clone();
-	                	blocklocdown.subtract(0, 2, 0);
-	                    if (blocklocdown.getBlock().getBlockData().getMaterial() == Material.KELP) break;
-	                    blocklocdown.add(0, 1, 0);
+	public static int genKelp(Location location, Random random, int radius, int patchsize) {
+        int n = 0; //Number of kelp plants generated
+        for (int p = 0; p < patchsize; p++) {
+            Location blockloc = oceanPatchLocation(location, radius, random);
+            if (blockloc.getBlock().getBlockData().getMaterial() == Material.WATER) {
+                BlockData kelp = Material.KELP.createBlockData();
+                BlockData kelpPlant = Material.KELP_PLANT.createBlockData();
+                int n3 = 1 + random.nextInt(10);
+                for (int k = 0; k <= n3; ++k) {
+                	Location blocklocup = blockloc.clone();
+                	blocklocup.add(0, 1, 0);
+                    if (blockloc.getBlock().getBlockData().getMaterial() == Material.WATER && blocklocup.getBlock().getBlockData().getMaterial() == Material.WATER) {
+                        if (k == n3) {
+                        	Ageable kelpy = (Ageable) kelp.clone();
+                        	kelpy.setAge(random.nextInt(23));
+                        	blockloc.getBlock().setBlockData(kelpy, false);
+                            n++;
+                        } else {
+                        	blockloc.getBlock().setBlockData(kelpPlant, false);
+                        }
+                    } else if (k > 0) {
+                    	Location blocklocdown = blockloc.clone();
+                    	blocklocdown.subtract(0, 2, 0);
+                        if (blocklocdown.getBlock().getBlockData().getMaterial() == Material.KELP) break;
+                        blocklocdown.add(0, 1, 0);
                     	Ageable kelpy = (Ageable) kelp.clone();
                     	kelpy.setAge(random.nextInt(23));
                     	blocklocdown.getBlock().setBlockData(kelpy, false);
-	                    n++;
-	                    break;
-	                }
-	                blockloc.add(0, 1, 0);
-	            }
-	        }
-	        return n;
-		} catch (Exception e){
-			e.printStackTrace();
-			return 0;
-		}
+                        n++;
+                        break;
+                    }
+                    blockloc.add(0, 1, 0);
+                }
+            }
+        }
+        return n;
 	}
 
-	public static int genSeaGrass(Location location, Random random, int patchsize, double tallchance) {
+	public static int genSeaGrass(Location location, Random random, int radius, int patchsize, double tallchance) {
         int n = 0;
         for (int k = 0; k < patchsize; k++) {
-            Location blockloc = ChunkUtils.getHeighestLocation(new Location(location.getWorld(), location.getBlockX() + random.nextInt(8) - random.nextInt(8), 0, location.getZ() + random.nextInt(8) - random.nextInt(8)), HeightMapType.OCEAN_FLOOR);
+            Location blockloc = oceanPatchLocation(location, radius, random);
             if (blockloc.getBlock().getBlockData().getMaterial() != Material.WATER) continue;
             boolean bl = random.nextDouble() < tallchance;
             BlockData blockLower = bl ? Material.TALL_SEAGRASS.createBlockData() : Material.SEAGRASS.createBlockData();
@@ -89,10 +86,10 @@ public class GenUtils {
         return n;
 	}
 
-	public static int genSeaPicke(Location location, Random random, int patchsize) {
+	public static int genSeaPicke(Location location, Random random, int radius, int patchsize) {
         int n = 0;
         for (int k = 0; k < patchsize; ++k) {
-        	Location blockloc = ChunkUtils.getHeighestLocation(new Location(location.getWorld(), location.getBlockX() + random.nextInt(8) - random.nextInt(8), 0, location.getZ() + random.nextInt(8) - random.nextInt(8)), HeightMapType.OCEAN_FLOOR);
+        	Location blockloc = oceanPatchLocation(location, radius, random);
         	BlockData pickle = Material.SEA_PICKLE.createBlockData(data -> {
         		((SeaPickle) data).setPickles(random.nextInt(4) + 1);
         		((SeaPickle) data).setWaterlogged(true);
@@ -104,30 +101,47 @@ public class GenUtils {
         return n;
 	}
 
-	public static boolean genRandomCoral(Location location, Random random) {
-		location = ChunkUtils.getHeighestLocation(location, HeightMapType.OCEAN_FLOOR);
-		BlockData blockData = randomCoralBlock(random).createBlockData();
-		switch(random.nextInt(3)) {
-			case 0: return genCoralTree(location, random, blockData);
-			case 1: return genCoralClaw(location, random, blockData);
-			case 2: return genCoralMushroom(location, random, blockData);
+	public static int genRandomCoral(Location location, Random random, int radius, int patchsize) {
+		int n = 0;
+		for (int k = 0; k < patchsize; k++) {
+			location = oceanPatchLocation(location, radius, random);
+			BlockData blockData = randomCoralBlock(random).createBlockData();
+			switch(random.nextInt(3)) {
+				case 0: if (genCoralTree(location, random, blockData)) n++; break;
+				case 1: if (genCoralClaw(location, random, blockData)) n++; break;
+				case 2: if (genCoralMushroom(location, random, blockData)) n++; break;
+			}
 		}
-		return true;
+		return n;
 	}
 
-	private static List<Material> corals = Arrays.stream(Material.values()).filter(mat -> mat.name().contains("CORAL") && !mat.name().contains("WALL_FANG")).collect(Collectors.toList());
+	private static Location oceanPatchLocation(Location location, int radius, Random random) {
+		return ChunkUtils.getHeighestLocation(new Location(location.getWorld(), 
+				location.getBlockX() + random.nextInt(radius) - random.nextInt(radius), 0, 
+				location.getZ() + random.nextInt(radius) - random.nextInt(radius)), HeightMapType.OCEAN_FLOOR);
+	}
+
+	private static List<Material> corals = Arrays.stream(Material.values()).filter(
+			mat -> mat.name().contains("CORAL") && !mat.name().contains("WALL_FANG") && !mat.name().contains("DEAD")
+		).collect(Collectors.toList());
 	private static Material randomCoral(Random random) {
 		return corals.get(random.nextInt(corals.size()));
 	}
-	private static List<Material> coralBlocks = Arrays.stream(Material.values()).filter(mat -> mat.name().contains("CORAL_BLOCK")).collect(Collectors.toList());
+	private static List<Material> coralBlocks = Arrays.stream(Material.values()).filter(
+			mat -> mat.name().contains("CORAL_BLOCK") && !mat.name().contains("DEAD")
+		).collect(Collectors.toList());
 	private static Material randomCoralBlock(Random random) {
 		return coralBlocks.get(random.nextInt(coralBlocks.size()));
 	}
-	private static List<Material> coralWalls = Arrays.stream(Material.values()).filter(mat -> mat.name().contains("CORAL_WALL_FAN")).collect(Collectors.toList());
+	private static List<Material> coralWalls = Arrays.stream(Material.values()).filter(
+			mat -> mat.name().contains("CORAL_WALL_FAN") && !mat.name().contains("DEAD")
+		).collect(Collectors.toList());
 	private static Material randomCoralWall(Random random) {
 		return coralWalls.get(random.nextInt(coralWalls.size()));
 	}
-	private static List<BlockFace> directions = Arrays.asList(BlockFace.WEST, BlockFace.EAST, BlockFace.SOUTH, BlockFace.NORTH);
+	private static List<BlockFace> directions = Arrays.asList(
+			BlockFace.WEST, BlockFace.EAST, BlockFace.SOUTH, BlockFace.NORTH
+		);
 	private static BlockFace randomDirection(Random random) {
 		return directions.get(random.nextInt(directions.size()));
 	}
@@ -164,26 +178,27 @@ public class GenUtils {
 
 	private static boolean genCoralTree(Location location, Random random, BlockData blockData) {
 		Location mutableLoc = location.clone();
-        int n = random.nextInt(3) + 1;
-        for (int k = 0; k < n; ++k) {
+        int baseHeight = random.nextInt(3) + 1;
+        for (int k = 0; k < baseHeight; ++k) {
             if (!genBaseCoral(mutableLoc, random, blockData)) {
                 return false;
             }
             mutableLoc.add(0, 1, 0);
         }
-        int n2 = random.nextInt(3) + 2;
-        ArrayList<BlockFace> arrayList = Lists.newArrayList(directions.toArray(new BlockFace[directions.size()]));
+        int directionCount = random.nextInt(3) + 2;
+        List<BlockFace> arrayList = directions;
         Collections.shuffle(arrayList, random);
-        List<BlockFace> list = arrayList.subList(0, n2);
+        List<BlockFace> list = arrayList.subList(0, directionCount);
         for (BlockFace face : list) {
-            mutableLoc.add(face.getModX(), face.getModY(), face.getModZ());
-            int n3 = random.nextInt(5) + 2;
-            int n4 = 0;
-            for (int k = 0; k < n3 && genBaseCoral(mutableLoc, random, blockData); k++) {
-            	mutableLoc.add(0, 1, 0);
-                if (k != 0 && (++n4 < 2 || random.nextFloat() >= 0.25f)) continue;
-                mutableLoc.add(face.getModX(), face.getModY(), face.getModZ());
-                n4 = 0;
+        	Location mutableTreeLoc = mutableLoc.clone();
+        	mutableTreeLoc.add(face.getModX(), face.getModY(), face.getModZ());
+            int branchHeight = random.nextInt(5) + 2;
+            int branchBranch = 0;
+            for (int k = 0; k < branchHeight && genBaseCoral(mutableTreeLoc, random, blockData); k++) {
+            	mutableTreeLoc.add(0, 1, 0);
+                if (k != 0 && (++branchBranch < 2 || random.nextFloat() >= 0.25f)) continue;
+                mutableTreeLoc.add(face.getModX(), face.getModY(), face.getModZ());
+                branchBranch = 0;
             }
         }
         return true;

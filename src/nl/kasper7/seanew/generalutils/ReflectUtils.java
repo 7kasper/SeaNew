@@ -7,7 +7,7 @@ public class ReflectUtils {
 	private static String craftVersion;
 	static {
 		try {
-			craftVersion = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + ".";
+			craftVersion = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
 		} catch (Exception e) {
 			craftVersion = "ohCrap"; 
 		}

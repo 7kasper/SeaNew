@@ -2,6 +2,7 @@ package nl.kasper7.seanew.generalutils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -55,9 +56,9 @@ public class Brush {
 		return false;
 	}
 
-	public boolean drop(Player clicker) {
+	public boolean drop(Player dropper) {
 		if (dropFunc != null) {
-			return dropFunc.apply(this, clicker);
+			return dropFunc.apply(this, dropper);
 		}
 		return false;
 	}
@@ -84,6 +85,14 @@ public class Brush {
 
 	public Object getMeta(String key) {
 		return metadata.get(key);
+	}
+
+	public int getIntMeta(String key) {
+		return ((AtomicInteger) getMeta(key)).get();
+	}
+
+	public void setIntMeta(String key, int value) {
+		((AtomicInteger) getMeta(key)).set(value);
 	}
 
 	public BiFunction<Brush, Player, Boolean> getRightClickFunc() {
