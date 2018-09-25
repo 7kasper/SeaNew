@@ -36,7 +36,8 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-            - ~/
+            - ~/libraries_runtime
+            - ~/libraries_shade
           key: v1-dependencies-{{ checksum "build.gradle" }}
         
       # run tests!
@@ -44,3 +45,4 @@ jobs:
 
       - store_artifacts:
           path: ./target
+          destination: SeaNew
