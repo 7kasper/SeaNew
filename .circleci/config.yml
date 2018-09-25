@@ -36,10 +36,11 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
+            - ~/
           key: v1-dependencies-{{ checksum "build.gradle" }}
         
       # run tests!
       - run: gradle jar
 
       - store_artifacts:
-          path: /target/SeaNew.jar
+          path: ./target
