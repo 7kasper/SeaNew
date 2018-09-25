@@ -48,12 +48,14 @@ public class BiomeBrushCmd implements CommandExecutor, TabCompleter {
 						BrushMode selectedMode = (args.length > 2  && args[2].toLowerCase().startsWith("sq"))
 								? BrushMode.SQUARE : BrushMode.CIRCLE;
 						Brushes.add(player, new Brush(key,
-								(brush) -> {
+								(brush) -> { //Constructor
 									brush.setMeta("size", selectedSize);
 									brush.setMeta("biome", selected);
 									brush.setMeta("mode", selectedMode);
+									brush.setMeta("maxSize", new AtomicInteger(60));
+									brush.setMeta("minSize", new AtomicInteger(1));
 								},
-								(brush, user) -> {
+								(brush, user) -> { //Left-click
 									brush.setMeta("mode", 
 										((BrushMode) brush.getMeta("mode")) == BrushMode.CIRCLE ? BrushMode.SQUARE : BrushMode.CIRCLE);
 									user.sendActionBar(ChatColor.YELLOW + "Biomebrush mode set to: " 
@@ -61,7 +63,7 @@ public class BiomeBrushCmd implements CommandExecutor, TabCompleter {
 											+ ChatColor.YELLOW + ".");
 									return true;
 								},
-								(brush, user) -> {
+								(brush, user) -> { //Right-click
 									int size = ((AtomicInteger) brush.getMeta("size")).get();
 									Biome biome = (Biome) brush.getMeta("biome");
 									BrushMode mode = (BrushMode) brush.getMeta("mode");
@@ -73,18 +75,8 @@ public class BiomeBrushCmd implements CommandExecutor, TabCompleter {
 									affected.getChunks().forEach(chunk -> ChunkUtils.updateChunk(chunk));
 									return true;
 								},
-								(brush, user) -> {
-									user.sendActionBar(ChatColor.YELLOW + "Biomebrush size size set to: " 
-										+ ChatColor.AQUA + ((AtomicInteger) brush.getMeta("size")).incrementAndGet()
-										+ ChatColor.YELLOW + ".");
-									return true;
-								},
-								(brush, user) -> {
-									user.sendActionBar(ChatColor.YELLOW + "Biomebrush size size set to: " 
-											+ ChatColor.AQUA + ((AtomicInteger) brush.getMeta("size")).decrementAndGet()
-											+ ChatColor.YELLOW + ".");
-									return true;
-								}
+								Brushes.DEFAULT_INCREMENT_SIZE_FUNCTION, //Drop
+								Brushes.DEFAULT_DECREMENT_SIZE_FUNCTION //Swap
 							));	
 						player.sendActionBar(ChatColor.YELLOW + "Bound biomebrush for " + ChatColor.AQUA + selected.name() 
 							+ ChatColor.YELLOW + " with size " + ChatColor.AQUA + selectedSize
@@ -102,7 +94,8 @@ public class BiomeBrushCmd implements CommandExecutor, TabCompleter {
 					player.sendActionBar(ChatColor.YELLOW + "Cleared brushes from " + ChatColor.AQUA + key.name() + ChatColor.YELLOW + "!");
 				} else {
 					sender.sendMessage(ChatColor.AQUA + "Do you want to SeaNew biomes?");
-					sender.sendMessage(ChatColor.YELLOW + "This makes the item in hand a biome brush for the selected biome.");
+					sender.sendMessage(ChatColor.YELLOW + "This makes the item in hand paint the selected biome.");
+					sender.sendMessage(ChatColor.GOLD + "Usage: /bbrush [biome] (size) (square/circle)");
 				}
 			}
 		} else {
