@@ -136,7 +136,7 @@ public class PopBrushCmd implements CommandExecutor, TabCompleter {
 
 	private SupportedPopulator getPopulator(String name) {
 		try {
-			return SupportedPopulator.valueOf(name.toLowerCase().trim());
+			return SupportedPopulator.valueOf(name.toUpperCase().trim());
 		} catch (IllegalArgumentException e) {
 			return null;
 		}
