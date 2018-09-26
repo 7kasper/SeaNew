@@ -1,6 +1,6 @@
 name: SeaNew
 author: 7kasper
-version: 0.2
+version: 0.3
 main: nl.kasper7.seanew.SeaNew
 api-version: 1.13
 commands:
