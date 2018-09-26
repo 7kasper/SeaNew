@@ -52,8 +52,8 @@ public class BiomeBrushCmd implements CommandExecutor, TabCompleter {
 									brush.setMeta("size", selectedSize);
 									brush.setMeta("biome", selected);
 									brush.setMeta("mode", selectedMode);
-									brush.setMeta("maxSize", new AtomicInteger(60));
-									brush.setMeta("minSize", new AtomicInteger(1));
+									brush.setMeta("maxsize", new AtomicInteger(60));
+									brush.setMeta("minsize", new AtomicInteger(1));
 								},
 								(brush, user) -> { //Right-click
 									brush.setMeta("mode", 
