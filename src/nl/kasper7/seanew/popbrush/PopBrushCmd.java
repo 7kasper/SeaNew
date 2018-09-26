@@ -43,8 +43,8 @@ public class PopBrushCmd implements CommandExecutor, TabCompleter {
 							brush.setMeta("size", selectedSize);
 							brush.setMeta("amount", selectedAmount);
 							brush.setMeta("extra", extraValue);
-							brush.setMeta("maxsize", 40);
-							brush.setMeta("minsize", 1);
+							brush.setMeta("maxsize", new AtomicInteger(40));
+							brush.setMeta("minsize", new AtomicInteger(1));
 						};
 						BiFunction<Brush, Player, Boolean> rightClick = (brush, user) -> { return true;	};
 						BiFunction<Brush, Player, Boolean> leftClick = (brush, user) -> { return true; };
@@ -98,7 +98,7 @@ public class PopBrushCmd implements CommandExecutor, TabCompleter {
 				} else {
 					sender.sendMessage(ChatColor.AQUA + "Do you want to SeaNew world population?");
 					sender.sendMessage(ChatColor.YELLOW + "This makes the item in hand paint with selected populator.");
-					sender.sendMessage(ChatColor.GOLD + "Usage: /pbrush [populator] (radius) (patchsize) (specific values...)");
+					sender.sendMessage(ChatColor.GOLD + "Usage: /pbrush [populator] (radius) (patchsize) (extra)");
 				}
 			}
 		} else {
